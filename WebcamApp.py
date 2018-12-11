@@ -2,13 +2,16 @@
 import numpy as np
 import cv2
 
-#Open Default Camera
-cap = cv2.VideoCapture(0)
+#Write Menu
+print('\t\t   *Welcome to the Simple Webcam Application*\n\n'
+      'Select a Feature:\n',
+      3*' ' + 'Press 1 to Save Photo in Color Mode\n',
+      3*' ' + 'Press 2 to Save Photo in Grayscale Mode\n',
+      3*' ' + 'Press 3 to Save Photo in Blur Filter\n',
+      3*' ' + 'Press 4 to Save Video Recording and Quit the Application\n')
 
-#Setting for Image Cap and Upper Value
-a = 0
-b = 0
-c = 0
+#Setting for Image cap and Upper Value
+i = 0
 upper = [0,0,0]
 
 #Find HSV Green Value 
@@ -34,17 +37,13 @@ for j in range (len(lower)):
     else:
         lower[j] -= 40
 
+#Open Default Camera
+cap = cv2.VideoCapture(0)
+
 #Define the Codec and Create VideoWriter Object
 fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-vid = cv2.VideoWriter('Hasil Video.avi', fourcc, 20.0, (640,480))
-
-#Write Menu
-print('\t\t   *Welcome to the Simple Webcam Application*\n\n'
-      'Select a Feature:\n',
-      3*' ' + 'Press 1 to Save Photo in Color Mode\n',
-      3*' ' + 'Press 2 to Save Photo in Grayscale Mode\n',
-      3*' ' + 'Press 3 to Save Photo in Blur Filter\n',
-      3*' ' + 'Press 4 to Save Video Recording and Quit the Application\n')
+vid = cv2.VideoWriter('Color Video.avi', fourcc, 20.0, (640,480))
+vid2 = cv2.VideoWriter('Green Video.avi', fourcc, 20.0, (640,480))
 
 while(cap.isOpened()):
     #Take each Frame
@@ -59,35 +58,37 @@ while(cap.isOpened()):
     # Threshold the HSV Image to Get only Green Color
     mask = cv2.inRange(hsv, lower_green, upper_green)   
     result = cv2.bitwise_and(frame, frame, mask = mask)
-    #Showing Camera cap
+    #Showing Camera Cap
     cv2.imshow('Detect Green Color',result)
     cv2.imshow('Webcam',frame)
     #Record Video
     vid.write(frame)
+    vid2.write(result)
     k = cv2.waitKey(1) & 0xFF
     if k == 49: #ord 1
         #Take a Photo
-        a += 1
-        colorName = "Result {}.png".format(a)
+        i += 1
+        colorName = "Result {}.png".format(i)
         #Save Photo
         cv2.imwrite(colorName, frame)
     elif k == 50: #ord 2           
         gray = cv2.cvtColor( frame, cv2.COLOR_BGR2GRAY )
-        b += 1
-        grayName = "Grayscale {}.png".format(b)
+        i += 1
+        grayName = "Grayscale {}.png".format(i)
         #Save Photo
         cv2.imwrite(grayName, gray)
     elif k == 51 : #ord 3
         blur = cv2.blur(frame,(7,7))
-        c += 1
-        blurName = "Blur {}.png".format(c)
+        i += 1
+        blurName = "Blur {}.png".format(i)
         cv2.imwrite(blurName, blur)
     elif k == 52 : #ord 4
         #Quit
         print ('Good Bye!')
         break
 
-#Release the Cap and Video   
+#Release the cap and Video   
 cap.release()
 vid.release()
+vid2.release()
 cv2.destroyAllWindows()      
