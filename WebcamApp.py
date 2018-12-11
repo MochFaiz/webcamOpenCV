@@ -89,7 +89,7 @@ while(cap.isOpened()):
         print ('Good Bye!')
         break
 
-#Release the cap and Video   
+#Release the Cap and Video   
 cap.release()
 vid.release()
 vid2.release()
