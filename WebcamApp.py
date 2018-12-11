@@ -1,4 +1,4 @@
-#Import Module
+#Import Library
 import numpy as np
 import cv2
 
